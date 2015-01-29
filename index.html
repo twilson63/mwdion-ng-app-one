@@ -1,0 +1,70 @@
+<!doctype html>
+<html ng-app="myapp">
+  <head>
+    <meta charset="utf-8">
+    <title>Foo</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  </head>
+  <body>
+    <div class="container">
+      <div ui-view></div>
+    </div>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script>
+      angular.module('myapp', ['ui.router'])
+        .config(function($stateProvider, $urlRouterProvider) {
+          $stateProvider
+            .state("home", {
+              url: '/',
+              templateUrl: "home.html",
+              controller: "HomeCtrl"
+            })
+            .state("newform", {
+              url: '/new',
+              templateUrl: "new.html",
+              controller: "NewCtrl"
+            })
+            .state("show", {
+              url: '/show/:id',
+              templateUrl: "show.html",
+              controller: "ShowCtrl"
+            });
+
+          $urlRouterProvider.otherwise('/');
+        })
+        .factory('items', function() {
+          var items = [];
+          return {
+            list: function() {
+              return items;
+            },
+            add: function(item) {
+              var id = items.length;
+              item.id = id;
+              items.push(item);
+            },
+            get: function(id) {
+              return items[id];
+            }
+          }
+        })
+        .controller("HomeCtrl", function($scope, items) {
+          $scope.items = items.list();
+        })
+        .controller("NewCtrl", function($scope, $state, items) {
+          $scope.add = function(item) {
+            // add the item to list
+            items.add(item);
+            // want to redirect back home
+            $state.go('home');
+          };
+        })
+        .controller("ShowCtrl", function($scope, $stateParams, items) {
+          $scope.item = items.get($stateParams.id);
+
+        })
+        
+    </script>
+  </body>
+</html>

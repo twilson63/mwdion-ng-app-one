@@ -1,0 +1,8 @@
+<h1>Hello Home</h1>
+<a ui-sref="newform">New Item</a>
+<h2>Items</h2>
+<ul>
+  <li ng-repeat="item in items">
+    <a ui-sref="show({ id: item.id})">{{item.description}}</a>
+  </li>
+</ul>
