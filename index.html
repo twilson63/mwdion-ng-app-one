@@ -29,6 +29,11 @@
               url: '/show/:id',
               templateUrl: "show.html",
               controller: "ShowCtrl"
+            })
+            .state("edit", {
+              url:'/edit/:id',
+              templateUrl: "edit.html",
+              controller: "EditCtrl"
             });
 
           $urlRouterProvider.otherwise('/');
@@ -46,6 +51,9 @@
             },
             get: function(id) {
               return items[id];
+            },
+            edit: function(item) {
+
             }
           }
         })
@@ -62,7 +70,15 @@
         })
         .controller("ShowCtrl", function($scope, $stateParams, items) {
           $scope.item = items.get($stateParams.id);
-
+        })
+        .controller("EditCtrl", function($scope, $stateParams, items, $state){
+          $scope.item = items.get($stateParams.id);
+          $scope.edit = function(item) {
+            //add updated item to list
+            items.edit(item);
+            // redirect back to home
+            $state.go('home');
+          }
         })
         
     </script>
