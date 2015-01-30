@@ -40,23 +40,40 @@
         })
         .factory('items', function() {
           var items = [];
+          var c = 0;
           return {
             list: function() {
               return items;
             },
             add: function(item) {
-              var id = items.length;
-              item.id = id;
+              item.id = c;
               items.push(item);
+              c++;
             },
             get: function(id) {
-              return items[id];
+              var item = null;
+              for(var i = 0; i < items.length; i++) {
+                if (items[i].id === parseInt(id, 10)) {
+                  item = items[i];
+                }
+              }
+              return item;
             },
-            edit: function(item) {
+            update: function(item) {
+              for(var i = 0;i < items.length; i++) {
+                if ( item.id === items[i].id) {
+                  items[i] = item;
+                }
+              }
             },
-            remove: function(item, index){
-              items.splice(items.indexOf(item), 1);
-            },
+            remove: function(id){
+              var results = [];
+              for (var i = 0; i < items.length; i++) {
+                if ( items[i].id !== parseInt(id,10)) 
+                  results.push(items[i]);
+              }
+              items = results;
+            }
           }
         })
         .controller("HomeCtrl", function($scope, items) {
@@ -70,21 +87,20 @@
             $state.go('home');
           };
         })
-        .controller("ShowCtrl", function($scope, $stateParams, items) {
+        .controller("ShowCtrl", function($scope, $stateParams, items, $state) {
           $scope.item = items.get($stateParams.id);
           $scope.remove = function(item){
           //remove item from list
-            items.remove(item);
-          // redirect back home
-            // $state.go('home');
+            if (confirm('are you sure?')) {
+              items.remove(item.id);
+              $state.go('home');
+            }
           }
         })
         .controller("EditCtrl", function($scope, $stateParams, items, $state){
           $scope.item = items.get($stateParams.id);
-          $scope.edit = function(item) {
-            //add updated item to list
-            items.edit(item);
-            // redirect back home
+          $scope.update = function(item) {
+            //items.update(item);
             $state.go('home');
           }
         }) 
