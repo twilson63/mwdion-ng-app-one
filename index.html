@@ -29,8 +29,13 @@
               url: '/show/:id',
               templateUrl: "show.html",
               controller: "ShowCtrl"
-            });
-
+            })
+            .state("edit", {
+              url:'/edit/:id',
+              templateUrl: "edit.html",
+              controller: "EditCtrl"
+            })
+            ;
           $urlRouterProvider.otherwise('/');
         })
         .factory('items', function() {
@@ -46,7 +51,12 @@
             },
             get: function(id) {
               return items[id];
-            }
+            },
+            edit: function(item) {
+            },
+            remove: function(item, index){
+              items.splice(items.indexOf(item), 1);
+            },
           }
         })
         .controller("HomeCtrl", function($scope, items) {
@@ -62,9 +72,22 @@
         })
         .controller("ShowCtrl", function($scope, $stateParams, items) {
           $scope.item = items.get($stateParams.id);
-
+          $scope.remove = function(item){
+          //remove item from list
+            items.remove(item);
+          // redirect back home
+            // $state.go('home');
+          }
         })
-        
+        .controller("EditCtrl", function($scope, $stateParams, items, $state){
+          $scope.item = items.get($stateParams.id);
+          $scope.edit = function(item) {
+            //add updated item to list
+            items.edit(item);
+            // redirect back home
+            $state.go('home');
+          }
+        }) 
     </script>
   </body>
 </html>
